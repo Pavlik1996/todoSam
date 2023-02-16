@@ -27,6 +27,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
+import { useCallback } from "react";
 
 function App() {
   const tasks = useSelector<AppRootStateType, TasksStateType>(
@@ -38,47 +39,62 @@ function App() {
 
   const dispatch = useDispatch();
 
-  const addTask = (todoID: string, title: string) => {
-    debugger;
-    dispatch(addTaskAC(todoID, title));
-  };
+  const addTask = useCallback(
+    (todoID: string, title: string) => {
+      dispatch(addTaskAC(todoID, title));
+    },
+    [dispatch]
+  );
 
-  const removeTask = (todoID: string, taskID: string) => {
-    dispatch(removeTaskAC(todoID, taskID));
-  };
+  const removeTask = useCallback(
+    (todoID: string, taskID: string) => {
+      dispatch(removeTaskAC(todoID, taskID));
+    },
+    [dispatch]
+  );
 
-  const changeTaskTitle = (
-    todoID: string,
-    taskID: string,
-    newTitle: string
-  ) => {
-    dispatch(changeTaskTitleAC(todoID, taskID, newTitle));
-  };
+  const changeTaskTitle = useCallback(
+    (todoID: string, taskID: string, newTitle: string) => {
+      dispatch(changeTaskTitleAC(todoID, taskID, newTitle));
+    },
+    [dispatch]
+  );
 
-  const changeTaskStatus = (
-    todoID: string,
-    taskID: string,
-    newIsDone: boolean
-  ) => {
-    dispatch(changeTaskStatusAC(todoID, taskID, newIsDone));
-  };
+  const changeTaskStatus = useCallback(
+    (todoID: string, taskID: string, newIsDone: boolean) => {
+      dispatch(changeTaskStatusAC(todoID, taskID, newIsDone));
+    },
+    [dispatch]
+  );
 
-  const addTodoList = (title: string) => {
-    const action = addTodoListAC(title);
-    dispatch(action);
-  };
+  const addTodoList = useCallback(
+    (title: string) => {
+      const action = addTodoListAC(title);
+      dispatch(action);
+    },
+    [dispatch]
+  );
 
-  const changeTodoTitle = (todoID: string, newTitle: string) => {
-    dispatch(changeTodoListTitleAC(todoID, newTitle));
-  };
+  const changeTodoTitle = useCallback(
+    (todoID: string, newTitle: string) => {
+      dispatch(changeTodoListTitleAC(todoID, newTitle));
+    },
+    [dispatch]
+  );
 
-  const changeTodoFilter = (todoID: string, newFilter: FilterValueType) => {
-    dispatch(changeTodoListFilterAC(todoID, newFilter));
-  };
+  const changeTodoFilter = useCallback(
+    (todoID: string, newFilter: FilterValueType) => {
+      dispatch(changeTodoListFilterAC(todoID, newFilter));
+    },
+    [dispatch]
+  );
 
-  const removeTodoList = (todoID: string) => {
-    dispatch(removeTodoListAC(todoID));
-  };
+  const removeTodoList = useCallback(
+    (todoID: string) => {
+      dispatch(removeTodoListAC(todoID));
+    },
+    [dispatch]
+  );
 
   return (
     <div>
@@ -105,28 +121,14 @@ function App() {
         </Grid>
         <Grid container spacing={5}>
           {todoList.map((el) => {
-            const taskFilter = () => {
-              switch (el.filter) {
-                case "active": {
-                  return tasks[el.id].filter((el) => !el.isDone);
-                }
-                case "completed": {
-                  return tasks[el.id].filter((el) => el.isDone);
-                }
-                default:
-                  return tasks[el.id];
-              }
-            };
-
-            const filteredTasks = taskFilter();
             return (
-              <Grid item>
+              <Grid item key={el.id}>
                 <Paper style={{ padding: "10px" }}>
                   <TodoList
                     key={el.id}
                     todoID={el.id}
                     filter={el.filter}
-                    tasks={filteredTasks}
+                    tasks={tasks[el.id]}
                     todoTitle={el.title}
                     addTask={addTask}
                     removeTask={removeTask}

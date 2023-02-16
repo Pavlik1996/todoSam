@@ -1,12 +1,12 @@
-import IconButton from "@mui/material/IconButton/IconButton";
+import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Checkbox from "@mui/material/Checkbox/Checkbox";
 import { AddItemForm } from "./component/AddItemForm";
 import { EditableSpan } from "./component/EditableSpan";
 import { TaskType } from "./state/tasks-reducer";
 import { FilterValueType } from "./state/todo-list-reducer";
 import { SuperButton } from "./component/SuperButton";
-import { CheckBox } from "@mui/icons-material";
+import { memo, useCallback } from "react";
+import { Task } from "./component/Tasks";
 
 type PropsType = {
   todoID: string;
@@ -26,26 +26,38 @@ type PropsType = {
   removeTodoList: (todoID: string) => void;
 };
 
-export const TodoList = (props: PropsType) => {
-  const addTaskHandler = (title: string) => {
+export const TodoList = memo((props: PropsType) => {
+  const addTaskHandler = useCallback((title: string) => {
     props.addTask(props.todoID, title);
-  };
+  }, []);
 
-  const removeTaskHandler = (taskID: string) => {
-    props.removeTask(props.todoID, taskID);
-  };
+  const removeTaskHandler = useCallback(
+    (taskID: string) => {
+      props.removeTask(props.todoID, taskID);
+    },
+    [props.removeTask, props.todoID]
+  );
 
-  const changeTaskTitleHandler = (taskID: string, title: string) => {
-    props.changeTaskTitle(props.todoID, taskID, title);
-  };
+  const changeTaskTitleHandler = useCallback(
+    (taskID: string, title: string) => {
+      props.changeTaskTitle(props.todoID, taskID, title);
+    },
+    [props.todoID, props.changeTaskTitle]
+  );
 
-  const changeTaskStatusHandler = (taskID: string, isDone: boolean) => {
-    props.changeTaskStatus(props.todoID, taskID, isDone);
-  };
+  const changeTaskStatusHandler = useCallback(
+    (taskID: string, isDone: boolean) => {
+      props.changeTaskStatus(props.todoID, taskID, isDone);
+    },
+    [props.changeTaskStatus, props.todoID]
+  );
 
-  const changeTodoTitleHandler = (title: string) => {
-    props.changeTodoTitle(props.todoID, title);
-  };
+  const changeTodoTitleHandler = useCallback(
+    (title: string) => {
+      props.changeTodoTitle(props.todoID, title);
+    },
+    [props.todoID]
+  );
 
   const changeTodoFilterHandler = (filter: FilterValueType) => {
     props.changeTodoFilter(props.todoID, filter);
@@ -55,34 +67,23 @@ export const TodoList = (props: PropsType) => {
     props.removeTodoList(props.todoID);
   };
 
-  const tasks = props.tasks.length ? (
-    props.tasks.map((el) => {
-      return (
-        <li key={el.id}>
-          <Checkbox
-            checked={el.isDone}
-            onChange={(e) =>
-              changeTaskStatusHandler(el.id, e.currentTarget.checked)
-            }
-          />
-          <EditableSpan
-            oldTitle={el.title}
-            callBack={(title) => changeTaskTitleHandler(el.id, title)}
-          />
-          <IconButton
-            aria-label="delete"
-            onClick={() => removeTaskHandler(el.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </li>
-      );
-    })
-  ) : (
-    <span>Task List is empty</span>
-  );
+  const taskFilter = () => {
+    switch (props.filter) {
+      case "active": {
+        return props.tasks.filter((el) => !el.isDone);
+      }
+      case "completed": {
+        return props.tasks.filter((el) => el.isDone);
+      }
+      default:
+        return props.tasks;
+    }
+  };
+
+  const filteredTasks = taskFilter();
+
   return (
-    <>
+    <div>
       <h3>
         <EditableSpan
           oldTitle={props.todoTitle}
@@ -93,19 +94,33 @@ export const TodoList = (props: PropsType) => {
         </IconButton>
       </h3>
       <AddItemForm callBack={addTaskHandler} labelText={"Add New Task"} />
-      <ul>{tasks}</ul>
+      <ul>
+        {filteredTasks.map((el) => (
+          <Task
+            key={el.id}
+            todoID={props.todoID}
+            task={el}
+            removeTask={removeTaskHandler}
+            changeTaskTitle={changeTaskTitleHandler}
+            changeTaskStatus={changeTaskStatusHandler}
+          />
+        ))}
+      </ul>
       <SuperButton
         callBack={() => changeTodoFilterHandler("all")}
         name={"all"}
+        color={props.filter === "all" ? "secondary" : "success"}
       />
       <SuperButton
         callBack={() => changeTodoFilterHandler("active")}
         name={"active"}
+        color={props.filter === "active" ? "secondary" : "success"}
       />
       <SuperButton
         callBack={() => changeTodoFilterHandler("completed")}
         name={"completed"}
+        color={props.filter === "completed" ? "secondary" : "success"}
       />
-    </>
+    </div>
   );
-};
+});

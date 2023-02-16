@@ -20,7 +20,7 @@ export const TodoListReducer = (
         title: action.payload.title,
         filter: "all",
       };
-      return [...state, newTodo];
+      return [newTodo, ...state];
     }
     case "CHANGE-TODO-LIST-TITLE": {
       return state.map((el) =>

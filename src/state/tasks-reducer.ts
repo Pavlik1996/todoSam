@@ -14,7 +14,6 @@ export const TaskReducer = (
 ): TasksStateType => {
   switch (action.type) {
     case "ADD-TASK": {
-      debugger;
       const newTask: TaskType = {
         id: action.payload.id,
         title: action.payload.title,
@@ -81,7 +80,6 @@ type tasksActionsType =
   | ReturnType<typeof removeTodoListAC>;
 
 export const addTaskAC = (todoID: string, title: string) => {
-  debugger;
   return {
     type: "ADD-TASK",
     payload: { todoID, id: v1(), title },
