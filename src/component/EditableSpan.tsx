@@ -2,7 +2,7 @@ import { ChangeEvent, memo, useState } from "react";
 
 type PropsType = {
   oldTitle: string;
-  callBack: (title: string) => void;
+  onChange: (title: string) => void;
 };
 
 export const EditableSpan = memo((props: PropsType) => {
@@ -10,7 +10,7 @@ export const EditableSpan = memo((props: PropsType) => {
   const [edit, setEdit] = useState(false);
 
   const changeTitle = () => {
-    props.callBack(title);
+    props.onChange(title);
   };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {

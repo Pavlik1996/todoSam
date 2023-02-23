@@ -21,7 +21,7 @@ import {
   removeTodoListAC,
   TodoListType,
 } from "./state/todo-list-reducer";
-import { TodoList } from "./TodoList";
+import { TodoList } from "./component/TodoList";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";

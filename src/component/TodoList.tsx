@@ -1,12 +1,12 @@
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { AddItemForm } from "./component/AddItemForm";
-import { EditableSpan } from "./component/EditableSpan";
-import { TaskType } from "./state/tasks-reducer";
-import { FilterValueType } from "./state/todo-list-reducer";
-import { SuperButton } from "./component/SuperButton";
+import { AddItemForm } from "./AddItemForm";
+import { EditableSpan } from "./EditableSpan";
+import { TaskType } from "../state/tasks-reducer";
+import { FilterValueType } from "../state/todo-list-reducer";
+import { SuperButton } from "./SuperButton";
 import { memo, useCallback } from "react";
-import { Task } from "./component/Tasks";
+import { Task } from "./Tasks";
 
 type PropsType = {
   todoID: string;
@@ -87,7 +87,7 @@ export const TodoList = memo((props: PropsType) => {
       <h3>
         <EditableSpan
           oldTitle={props.todoTitle}
-          callBack={changeTodoTitleHandler}
+          onChange={changeTodoTitleHandler}
         />
         <IconButton aria-label="delete" onClick={removeTodoListHandler}>
           <DeleteIcon />

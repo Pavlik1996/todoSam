@@ -35,7 +35,7 @@ export const Task = memo((props: PropsType) => {
       />
       <EditableSpan
         oldTitle={props.task.title}
-        callBack={changeTaskTitleHandler}
+        onChange={changeTaskTitleHandler}
       />
       <IconButton
         aria-label="delete"
